@@ -18,6 +18,7 @@ type Config struct {
 	Password  string
 	DateFrom  string
 	DateUntil string
+	CSVOut    string
 }
 
 func GetConfig() Config {
@@ -30,15 +31,19 @@ func GetConfig() Config {
 	config.Password = "Js6Us47UtB78qcsY9[qP"
 	config.DateFrom = "2018-09-01"
 	config.DateUntil = "2018-09-30"
+	config.CSVOut = "/Users/lava/Timesheet.csv"
 	return config
 }
 
-func WriteCSV(records [][]string) {
-	w := csv.NewWriter(os.Stdout)
+func WriteCSV(path string, records [][]string) {
+	file, _ := os.Create(path)
+	defer file.Close()
+
+	w := csv.NewWriter(file)
 
 	for _, record := range records {
 		if err := w.Write(record); err != nil {
-			log.Fatalln("error writing record to csv:", err)
+			log.Fatalln("Error writing record to csv: ", err)
 		}
 	}
 
@@ -98,5 +103,5 @@ func main() {
 	log.Println("Done.")
 	log.Println("Dumping CSV.")
 
-	WriteCSV(timesheets)
+	WriteCSV(config.CSVOut, timesheets)
 }
