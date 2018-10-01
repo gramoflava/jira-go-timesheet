@@ -51,6 +51,7 @@ func WriteCSV(records [][]string) {
 
 func main() {
 	config := GetConfig()
+	log.Println("Got configuration.")
 
 	tp := jira.BasicAuthTransport{
 		Username: config.Login,
@@ -58,14 +59,21 @@ func main() {
 	}
 
 	client, _ := jira.NewClient(tp.Client(), config.URL)
+	log.Println("Connection established.")
+	log.Printf("Running query: '%s'.\n", config.BaseJQL)
+
 	issues, _, _ := client.Issue.Search(config.BaseJQL, nil)
+	log.Printf("%d issues found.\n", len(issues))
 
 	timesheets := make([][]string, 0)
 
 	i := 0
+
+	log.Print("Extracting worklogs:")
 	for _, issue := range issues {
 
 		worklogs, _, _ := client.Issue.GetWorklogs(issue.ID)
+		log.Printf(" %d", len(worklogs.Worklogs))
 		for _, record := range worklogs.Worklogs {
 			started := time.Time(*record.Started)
 
@@ -87,6 +95,8 @@ func main() {
 			i++
 		}
 	}
+	log.Println("Done.")
+	log.Println("Dumping CSV.")
 
 	WriteCSV(timesheets)
 }
