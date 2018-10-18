@@ -1,76 +1,33 @@
 package main
 
 import (
-	"encoding/csv"
 	"fmt"
 	"log"
-	"os"
+	"path"
 	"time"
 
 	"github.com/andygrunwald/go-jira"
+	"lab.midgard.by/lava/jira-go-timeshit/internal/pkg/appconfig"
+	"lab.midgard.by/lava/jira-go-timeshit/internal/pkg/writer/csv"
 )
 
 const secondsPerHour = 3600
 const configFilePath = "~/.config/jira-go-timesheet/config.json"
 
-type config struct {
-	URL       string
-	BaseJQL   string
-	Login     string
-	Password  string
-	DateFrom  string
-	DateUntil string
-	CSVOut    string
-}
-
-func getConfig() config {
-	//TODO: Add reading from the actual config file
-	//https://www.thepolyglotdeveloper.com/2017/04/load-json-configuration-file-golang-application/
-
-	var cfg config
-	cfg.URL = "https://tandbergdata.atlassian.net"
-	cfg.BaseJQL = "PROJECT in (RDX, VTX2U, VTX1U) AND worklogAuthor in (v.redzhepov, vshakhov, a.hrytsevich) AND timespent is not EMPTY"
-	cfg.Login = "e.lavnikevich@sam-solutions.com"
-	cfg.Password = "Js6Us47UtB78qcsY9[qP"
-	cfg.DateFrom = "2018-09-01"
-	cfg.DateUntil = "2018-09-30"
-	cfg.CSVOut = "/Users/lava/Timesheet.csv"
-	return cfg
-}
-
-func writeCSV(path string, records [][]string) {
-	file, _ := os.Create(path)
-	defer file.Close()
-
-	w := csv.NewWriter(file)
-
-	for _, record := range records {
-		if err := w.Write(record); err != nil {
-			log.Fatalln("Error writing record to csv: ", err)
-		}
-	}
-
-	defer w.Flush()
-
-	if err := w.Error(); err != nil {
-		log.Fatal(err)
-	}
-}
-
 func main() {
-	cfg := getConfig()
+	cfg := appconfig.GetDummy()
 	log.Println("Got configuration.")
 
 	tp := jira.BasicAuthTransport{
-		Username: cfg.Login,
-		Password: cfg.Password,
+		Username: cfg.Servers[0].Login,
+		Password: cfg.Servers[0].Password,
 	}
 
-	client, _ := jira.NewClient(tp.Client(), cfg.URL)
+	client, _ := jira.NewClient(tp.Client(), cfg.Servers[0].URL)
 	log.Println("Connection established.")
-	log.Printf("Running query: '%s'.\n", cfg.BaseJQL)
+	log.Printf("Running query: '%s'.\n", cfg.Servers[0].BaseJQL)
 
-	issues, _, _ := client.Issue.Search(cfg.BaseJQL, nil)
+	issues, _, _ := client.Issue.Search(cfg.Servers[0].BaseJQL, nil)
 	log.Printf("%d issues found.\n", len(issues))
 
 	timesheets := make([][]string, 0)
@@ -104,7 +61,9 @@ func main() {
 		}
 	}
 	log.Println("Done.")
-	log.Println("Dumping CSV.")
 
-	writeCSV(cfg.CSVOut, timesheets)
+	filename := path.Join(cfg.TargetDir, "Timesheet.csv")
+	log.Printf("Dumping CSV to '%s'.\n", filename)
+
+	csv.Write(filename, timesheets)
 }
