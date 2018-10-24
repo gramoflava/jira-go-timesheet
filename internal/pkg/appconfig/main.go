@@ -28,7 +28,7 @@ func GetDummy() *Config {
 	server1.URL = "https://tandbergdata.atlassian.net"
 	server1.Login = "e.lavnikevich@sam-solutions.com"
 	server1.Password = "Js6Us47UtB78qcsY9[qP"
-	server1.BaseJQL = "PROJECT in (RDX, VTX2U, VTX1U) AND worklogAuthor in (a.hrytsevich, v.redzhepov, vshakhov) AND timespent is not EMPTY AND worklogdate >= 2018-10-01"
+	server1.BaseJQL = "PROJECT in (RDX, VTX2U, VTX1U) AND worklogAuthor in (a.hrytsevich, v.redzhepov, vshakhov) AND timespent is not EMPTY"
 
 	var config Config
 	config.Servers = append(config.Servers, server1)
