@@ -8,8 +8,10 @@ Atlassian never was too user-friendly and always was greedy. For some time now t
 
 ## Vision
 
-JIRA Cloud provides some API, which can be used to request worklogs. **jira-go-timeshit** will connect to the JIRA Cloud, get worklogs for the required period and format them as a CSV-file.
+JIRA Cloud provides some API, which can be used to request worklogs. **jira-go-timeshit** will connect to the JIRA Cloud, get worklogs for the required period of time and format them as a CSV-file.
 
 ## Technical solution
 
 The project is implemented in Go and only has CLI-interface planned.
+
+Note: Only tested on a small project. I do not know well the API but have seen some paging involved.
