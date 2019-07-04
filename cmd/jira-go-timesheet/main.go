@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/andygrunwald/go-jira"
-	"lab.midgard.by/lava/jira-go-timeshit/internal/pkg/appconfig"
-	"lab.midgard.by/lava/jira-go-timeshit/internal/pkg/writer/csv"
+	"github.com/gramoflava/jira-go-timesheet/internal/pkg/appconfig"
+	"github.com/gramoflava/jira-go-timesheet/internal/pkg/writer/csv"
 )
 
 const secondsPerHour = 3600

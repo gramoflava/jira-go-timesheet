@@ -1,4 +1,4 @@
-# jira-go-timeshit
+# jira-go-timesheet
 
 The sole purpose of the project is to bring back timesheets to the JIRA Cloud.
 
@@ -8,7 +8,7 @@ Atlassian never was too user-friendly and always was greedy. For some time now t
 
 ## Vision
 
-JIRA Cloud provides some API, which can be used to request worklogs. **jira-go-timeshit** will connect to the JIRA Cloud, get worklogs for the required period of time and format them as a CSV-file.
+JIRA Cloud provides some API, which can be used to request worklogs. **jira-go-timesheet** will connect to the JIRA Cloud, get worklogs for the required period of time and format them as a CSV-file.
 
 ## Technical solution
 
